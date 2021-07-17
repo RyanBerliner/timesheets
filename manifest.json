@@ -4,16 +4,16 @@
   "description": "Create timesheets for races.",
   "icons": [
     {
-      "src": "icons-192.png",
+      "src": "/timesheets/icons-192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "icons-512.png",
+      "src": "/timesheets/icons-512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
   ],
-  "start_url": "/timesheets/",
+  "start_url": "/timesheets/index.html",
   "display": "fullscreen"
 }
