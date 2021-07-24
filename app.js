@@ -463,7 +463,6 @@ function App(props) {
       }),
       timesheets.archivedTimesheets.length === 0 ? e('li', {}, 'No archived timesheets') : null
     ),
-    e('p', {}, e('a', {href: 'https://github.com/RyanBerliner/timesheets/blob/master/README.md'}, 'What is this and how do I use it?'))
   );
 }
 
