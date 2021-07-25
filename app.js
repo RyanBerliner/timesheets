@@ -430,7 +430,7 @@ function App(props) {
     activeTimesheet: null
   }, '[timesheetsindex]');
   return e(React.Fragment, {},
-    e('div', {className: 'd-flex py-3 align-items-center mt-4'},
+    e('div', {className: 'd-flex py-3 align-items-center mt-2'},
       e('h2', {className: 'h3 my-0'}, 'Timesheets'),
       e('button',
         {
@@ -463,7 +463,6 @@ function App(props) {
       }),
       timesheets.archivedTimesheets.length === 0 ? e('li', {}, 'No archived timesheets') : null
     ),
-    e('p', {}, e('a', {href: 'https://github.com/RyanBerliner/timesheets/blob/master/README.md'}, 'What is this and how do I use it?'))
   );
 }
 
