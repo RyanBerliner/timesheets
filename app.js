@@ -204,6 +204,7 @@ function Time(props) {
 
 function SingleTimesheet(props) {
   const [timesheet, dispatch] = useLocalStorage({times: [], details: {}, timesync: null}, props.timesheet);
+  const [secondsSinceLastRacer, setSecondsSinceLastRacer] = React.useState(0);
   const id = React.useRef(randomId());
   const collapse = React.useRef();
   const syncToast = React.useRef();
@@ -212,6 +213,22 @@ function SingleTimesheet(props) {
       collapse.current.show();
     }
   }, [props.active]);
+  const lastTime = React.useMemo(function() {
+    if (timesheet.times.length === 0) {
+      return null;
+    } else {
+      return timesheet.times[timesheet.times.length - 1];
+    }
+  }, [timesheet.times]);
+  React.useEffect(function() {
+    const interval = setInterval(function() {
+      const milliseconds = lastTime == null ? 0 : Date.now() - lastTime;
+      setSecondsSinceLastRacer(parseInt(milliseconds / 1000));
+    }, 1000);
+    return function() {
+      clearInterval(interval);
+    }
+  }, [lastTime]);
   return e('div', {className: 'accordion-item'},
     e('h2',
       {
@@ -227,7 +244,7 @@ function SingleTimesheet(props) {
           'aria-expanded': false,
           'aria-controls': `sheet-${id.current}`,
         },
-        props.timesheet
+        `${props.timesheet} (+${secondsSinceLastRacer})`
       ),
     ),
     e(BS5ReactElements.Collapse, 

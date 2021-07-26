@@ -15,7 +15,7 @@ const CACHED_FILES = [
 
 self.addEventListener('install', function (event) {
   event.waitUntil(
-    caches.open('assets-static-v2').then(function (cache) {
+    caches.open('assets-static-v3').then(function (cache) {
       return cache.addAll(CACHED_FILES);
     }),
   );
@@ -29,6 +29,7 @@ self.addEventListener('activate', function (event) {
           .filter(function (cacheName) {
             return [
               'assets-static-v1',
+              'assets-static-v2',
             ].indexOf(cacheName) >= 0;
           })
           .map(function (cacheName) {
