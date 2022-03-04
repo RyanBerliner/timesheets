@@ -26,7 +26,7 @@ const EXPECTED_CACHES = [
 self.addEventListener('install', function (event) {
   event.waitUntil(
     caches.open(`${CACHE_PREFIX}static-v3`).then(function (cache) {
-      return cache.addAll(STATIC_ASSETS);
+      return cache.addAll(ASSETS_STATIC);
     }),
   );
 });
@@ -37,6 +37,9 @@ self.addEventListener('activate', function (event) {
       return Promise.all(
         cacheNames
           .filter(function (cacheName) {
+            const isOldCache = cacheName.startsWith(CACHE_PREFIX) &&
+              EXPECTED_CACHES.indexOf(cacheName) < 0;
+
             return [
               // assets-static-v* are legacy from when asset caching
               // was implemented poorly. Some older user may still need
@@ -44,7 +47,7 @@ self.addEventListener('activate', function (event) {
               'assets-static-v1',
               'assets-static-v2',
               'assets-static-v3',
-            ].indexOf(cacheName) >= 0; // todo: also check if cache starts with prefix and is not in expected caches arr
+            ].indexOf(cacheName) >= 0 || isOldCache;
           })
           .map(function (cacheName) {
             return caches.delete(cacheName);
