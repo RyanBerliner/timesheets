@@ -18,7 +18,7 @@ const ASSETS_STATIC = [
 // with something specific to timesheets so we lessen the possiblity of conflicts
 
 const CACHE_PREFIX = 'timesheets-sw-assets';
-const CACHE_VERSION = 'v2022-03-11';
+const CACHE_VERSION = '2022.03.11.1';
 
 const EXPECTED_CACHES = [
   `${CACHE_PREFIX}static-${CACHE_VERSION}`,
