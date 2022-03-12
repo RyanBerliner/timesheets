@@ -1,11 +1,11 @@
 // https://web.dev/offline-cookbook/
 
 const ASSETS_STATIC = [
-  'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css',
-  'https://unpkg.com/react@17/umd/react.production.min.js',
-  'https://unpkg.com/react-dom@17/umd/react-dom.production.min.js',
-  'https://cdn.jsdelivr.net/npm/bootstrap@5/dist/js/bootstrap.bundle.min.js',
-  'https://cdn.jsdelivr.net/npm/bs5-react-elements@0/dist/bs5-react-elements.min.js',
+  'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css',
+  'https://unpkg.com/react@17.0.2/umd/react.production.min.js',
+  'https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js',
+  'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js',
+  'https://cdn.jsdelivr.net/npm/bs5-react-elements@2.1.0/dist/bs5-react-elements.min.js',
   'app.js',
   'index.html',
   'manifest.json',
@@ -18,7 +18,7 @@ const ASSETS_STATIC = [
 // with something specific to timesheets so we lessen the possiblity of conflicts
 
 const CACHE_PREFIX = 'timesheets-sw-assets';
-const CACHE_VERSION = '2022.03.11.1';
+const CACHE_VERSION = '2022.03.12.0';
 
 const EXPECTED_CACHES = [
   `${CACHE_PREFIX}static-${CACHE_VERSION}`,
