@@ -18,14 +18,15 @@ const ASSETS_STATIC = [
 // with something specific to timesheets so we lessen the possiblity of conflicts
 
 const CACHE_PREFIX = 'timesheets-sw-assets';
+const CACHE_VERSION = 'v2022-03-11';
 
 const EXPECTED_CACHES = [
-  `${CACHE_PREFIX}static-v2022-03-11`,
+  `${CACHE_PREFIX}static-${CACHE_VERSION}`,
 ];
 
 self.addEventListener('install', function (event) {
   event.waitUntil(
-    caches.open(`${CACHE_PREFIX}static-v3`).then(function (cache) {
+    caches.open(`${CACHE_PREFIX}static-${CACHE_VERSION}`).then(function (cache) {
       return cache.addAll(ASSETS_STATIC);
     }),
   );
