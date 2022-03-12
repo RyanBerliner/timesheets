@@ -4,7 +4,7 @@ This is a timesheet web app that **works offline**, is **installable on your pho
 
 ## How to install on your phone
 
-Visit [https://ryanberliner.com/timesheets/index.html](https://ryanberliner.com/timesheets/index.html)
+Visit [https://ryanberliner.com/timesheets/index.html](https://ryanberliner.com/timesheets/index.html). You can also [scan this QR code.](install-qrcode.png)
 
 To install on your home screen (which is **required for offline usage**), follow the instructions for your type of phone.
 
