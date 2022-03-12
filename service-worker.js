@@ -1,6 +1,6 @@
 // https://web.dev/offline-cookbook/
 
-const CACHED_FILES = [
+const ASSETS_STATIC = [
   'https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css',
   'https://unpkg.com/react@17/umd/react.production.min.js',
   'https://unpkg.com/react-dom@17/umd/react-dom.production.min.js',
@@ -13,10 +13,21 @@ const CACHED_FILES = [
   'icons-512.png',
 ];
 
+// This is deployed a my github pages site, which contains other projects
+// and sites on the same domain. Because of this we should prefix the caches
+// with something specific to timesheets so we lessen the possiblity of conflicts
+
+const CACHE_PREFIX = 'timesheets-sw-assets';
+const CACHE_VERSION = 'v2022-03-11';
+
+const EXPECTED_CACHES = [
+  `${CACHE_PREFIX}static-${CACHE_VERSION}`,
+];
+
 self.addEventListener('install', function (event) {
   event.waitUntil(
-    caches.open('assets-static-v3').then(function (cache) {
-      return cache.addAll(CACHED_FILES);
+    caches.open(`${CACHE_PREFIX}static-${CACHE_VERSION}`).then(function (cache) {
+      return cache.addAll(ASSETS_STATIC);
     }),
   );
 });
@@ -27,10 +38,17 @@ self.addEventListener('activate', function (event) {
       return Promise.all(
         cacheNames
           .filter(function (cacheName) {
+            const isOldCache = cacheName.startsWith(CACHE_PREFIX) &&
+              EXPECTED_CACHES.indexOf(cacheName) < 0;
+
             return [
+              // assets-static-v* are legacy from when asset caching
+              // was implemented poorly. Some older user may still need
+              // these deleted - so lets keep this here
               'assets-static-v1',
               'assets-static-v2',
-            ].indexOf(cacheName) >= 0;
+              'assets-static-v3',
+            ].indexOf(cacheName) >= 0 || isOldCache;
           })
           .map(function (cacheName) {
             return caches.delete(cacheName);
@@ -46,4 +64,10 @@ self.addEventListener('fetch', function (event) {
       return response || fetch(event.request);
     }),
   );
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
