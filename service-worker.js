@@ -20,7 +20,7 @@ const ASSETS_STATIC = [
 const CACHE_PREFIX = 'timesheets-sw-assets';
 
 const EXPECTED_CACHES = [
-  `${CACHE_PREFIX}static-v3`,
+  `${CACHE_PREFIX}static-v2022-03-11`,
 ];
 
 self.addEventListener('install', function (event) {
@@ -63,4 +63,10 @@ self.addEventListener('fetch', function (event) {
       return response || fetch(event.request);
     }),
   );
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
 });
