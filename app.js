@@ -162,7 +162,6 @@ function AddTime(props) {
 function Time(props) {
   const time = props.time;
   const [editTimeRacer, setEditTimeRacer] = React.useState(time.racer);
-  const saved = time.racer === editTimeRacer;
   const timestamp = new Date(0);
   timestamp.setUTCMilliseconds(time.time);
   const dropdown = React.useRef();
