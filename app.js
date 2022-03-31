@@ -73,6 +73,7 @@ function reducer(state, action) {
       newState.timesync = payload.time;
       return newState;
     case 'addtimesheet':
+    case 'restoretimesheet':
       if (newState.timesheets.indexOf(payload.name) < 0) {
         newState.timesheets.push(payload.name);
       }
@@ -459,6 +460,17 @@ function ArchivedTimesheet(props) {
     e('a',
       {
         role: 'button',
+        className: 'text-underline',
+        onClick: function(e) {
+          props.dispatch({type: 'restoretimesheet', payload: {name: props.timesheet}});
+        }
+      },
+      'Restore'
+    ),
+    e('span', {className: 'd-inline-block mx-2'}, '|'),
+    e('a',
+      {
+        role: 'button',
         className: 'text-danger',
         onClick: function(e) {
           const OK = window.confirm('Are you sure you\'d like to delete this timesheet? This cannot be undone.');
@@ -506,7 +518,6 @@ function App(props) {
       }),
     ),
     e('h2', {className: 'h4 mt-5'}, 'Archived Timesheets'),
-    e('p', {}, 'You can restore a timesheet by creating another one with the same name.'),
     e('ul', {className: 'mb-5'},
       timesheets.archivedTimesheets.map(function(timesheet) {
         return e(ArchivedTimesheet, {timesheet: timesheet, dispatch: dispatch})
