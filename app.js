@@ -492,7 +492,7 @@ function App(props) {
     activeTimesheet: null
   }, '[timesheetsindex]');
   return e(React.Fragment, {},
-    e('div', {className: 'd-flex py-3 align-items-center mt-2'},
+    e('div', {className: 'container d-flex py-3 align-items-center mt-2'},
       e('h2', {className: 'h3 my-0'}, 'Timesheets'),
       e('button',
         {
@@ -504,8 +504,8 @@ function App(props) {
       ),
     ),
     e(CreateTimesheet, {timesheets: timesheets.timesheets, dispatch: dispatch}),
-    timesheets.timesheets.length === 0 ? e('p', {}, 'Create a timesheet to get started.') : null,
-    e('div', {className: 'accordion my-3'},
+    timesheets.timesheets.length === 0 ? e('p', {className: 'container'}, 'Create a timesheet to get started.') : null,
+    e('div', {className: 'accordion my-3 container px-0 px-md-2'},
       timesheets.timesheets.slice(0).reverse().map(function(timesheet) {
         return e(SingleTimesheet,
           {
@@ -517,12 +517,14 @@ function App(props) {
         )
       }),
     ),
-    e('h2', {className: 'h4 mt-5'}, 'Archived Timesheets'),
-    e('ul', {className: 'mb-5'},
-      timesheets.archivedTimesheets.map(function(timesheet) {
-        return e(ArchivedTimesheet, {timesheet: timesheet, dispatch: dispatch})
-      }),
-      timesheets.archivedTimesheets.length === 0 ? e('li', {}, 'No archived timesheets') : null
+    e('div', {className: 'container'},
+      e('h2', {className: 'h4 mt-5'}, 'Archived Timesheets'),
+      e('ul', {className: 'mb-5'},
+        timesheets.archivedTimesheets.map(function(timesheet) {
+          return e(ArchivedTimesheet, {timesheet: timesheet, dispatch: dispatch})
+        }),
+        timesheets.archivedTimesheets.length === 0 ? e('li', {}, 'No archived timesheets') : null
+      ),
     ),
   );
 }
