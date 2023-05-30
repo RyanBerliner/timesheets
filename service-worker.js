@@ -1,10 +1,11 @@
 // https://web.dev/offline-cookbook/
 
 const ASSETS_STATIC = [
-  'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css',
+  'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css',
+  'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css',
   'https://unpkg.com/react@17.0.2/umd/react.production.min.js',
   'https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js',
-  'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js',
+  'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js',
   'https://cdn.jsdelivr.net/npm/bs5-react-elements@2.1.0/dist/bs5-react-elements.min.js',
   'app.js',
   'index.html',

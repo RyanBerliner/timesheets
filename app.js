@@ -45,6 +45,18 @@ if ('serviceWorker' in navigator) {
   });
 }
 
+// match the users os theme
+function setTheme() {
+  const theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-bs-theme', theme);
+}
+
+setTheme();
+
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+  setTheme();
+});
+
 const e = React.createElement;
 
 // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
@@ -124,20 +136,24 @@ function formatShareData(timesheet, useBreak) {
 function AddTime(props) {
   const [addTimeRacer, setAddTimeRacer] = React.useState('');
   const id = React.useRef(randomId());
+  const input = React.useRef();
   return e('form',
     {
-      className: 'mt-1 py-3 row bg-white',
+      className: 'pb-4 row',
+      style: {backdropFilter: 'blur(5px)'},
       onSubmit: function(e) {
         e.preventDefault();
         props.dispatch({type: 'addtime', payload: {time: Date.now(), racer: addTimeRacer}});
         setAddTimeRacer('');
+        input.current.focus();
       }
     },
-    e('div', {className: 'col-md-8 col-lg-10 mb-3 mb-md-0 d-flex align-items-center'},
-      e('label', {className: 'text-nowrap', htmlFor: id.current}, 'Racer #'),
+    e('div', {className: 'col-md-8 mb-3 mb-md-0 d-flex align-items-center'},
+      e('label', {className: 'visually-hidden', htmlFor: id.current}, 'Racer #'),
       e('input',
         {
-          className: 'form-control ms-3',
+          ref: input,
+          className: 'form-control form-control-lg',
           type: 'number',
           id: id.current,
           placeholder: 'Enter racer # or add it later...',
@@ -148,13 +164,14 @@ function AddTime(props) {
         }
       ),
     ),
-    e('div', {className: 'col-lg-2 col-md-4'},
-      e('input',
+    e('div', {className: 'col-md-4'},
+      e('button',
         {
-          className: 'btn btn-primary d-block w-100',
+          className: 'btn btn-primary btn-lg d-block w-100 text-nowrap',
           type: 'submit',
-          value: 'Add Time'
-        }
+        },
+        e('i', {className: 'bi bi-stopwatch me-2'}),
+        'Record Time'
       )
     )
   );
@@ -239,9 +256,16 @@ function Time(props) {
 function SingleTimesheet(props) {
   const [timesheet, dispatch] = useLocalStorage({times: [], details: {}, timesync: null}, props.timesheet);
   const [secondsSinceLastRacer, setSecondsSinceLastRacer] = React.useState(0);
+  const [showClass, setShowClass] = React.useState(props.active ? 'timesheet-shown' : '');
   const id = React.useRef(randomId());
   const collapse = React.useRef();
   const syncToast = React.useRef();
+  const addShowClass = React.useCallback(function() {
+    setShowClass('timesheet-shown');
+  });
+  const removeShowClass = React.useCallback(function() {
+    setShowClass('');
+  });
   React.useEffect(function() {
     if (props.active) {
       collapse.current.show();
@@ -263,10 +287,10 @@ function SingleTimesheet(props) {
       clearInterval(interval);
     }
   }, [lastTime]);
-  return e('div', {className: 'accordion-item'},
+  return e('div', {className: 'accordion-item rounded mb-2 ' + showClass},
     e('h2',
       {
-        className: 'accordion-header sticky-top',
+        className: 'accordion-header',
         id: `timesheet-heading-${id.current}`
       },
       e('button',
@@ -288,6 +312,9 @@ function SingleTimesheet(props) {
         'aria-labelledby': `timesheet-heading-${id.current}`,
         config: {toggle: false},
         component: collapse,
+        'data-bs-parent': '#timesheets-accordion',
+        onShow: addShowClass,
+        onHidden: removeShowClass,
       },
       e('div', {className: 'accordion-body pt-0'},
         e(AddTime, {dispatch: dispatch}),
@@ -322,7 +349,7 @@ function SingleTimesheet(props) {
             e(BS5ReactElements.Toast,
               {
                 component: syncToast,
-                className: 'toast bg-white my-3 mx-auto hide'
+                className: 'toast bg-body my-3 mx-auto hide'
               },
               e('div', {className: 'd-flex align-items-center'},
                 e('div', {className: 'toast-body'}, 'Time sync has been recorded.'),
@@ -347,7 +374,7 @@ function SingleTimesheet(props) {
                 id: `share-${id.current}`,
                 'aria-hidden': true
               },
-              e('div', {className: 'modal-dialog'},
+              e('div', {className: 'modal-dialog modal-dialog-centered'},
                 e('div', {className: 'modal-content'},
                   e('div', {className: 'modal-header'},
                     e('h3', {className: 'h5 modal-title'}, 'Share Timesheet'),
@@ -413,7 +440,7 @@ function CreateTimesheet(props) {
         setTimesheetName('');
       }
     },
-    e('div', {className: 'modal-dialog'},
+    e('div', {className: 'modal-dialog modal-sm modal-dialog-centered'},
       e('div', {className: 'modal-content p-4'},
         e('form',
           {
@@ -437,12 +464,12 @@ function CreateTimesheet(props) {
               }
             }
           ),
-          e('div', {className: 'd-flex justify-content-between'},
-            e('input', {className: 'btn btn-primary', type: 'submit', value: 'Create Timesheet'}),
+          e('div', {},
+            e('input', {className: 'btn btn-primary w-100 mb-2', type: 'submit', value: 'Create'}),
             e('button',
               {
                 type: 'button',
-                className: 'btn btn-outline-danger',
+                className: 'btn w-100 btn-secondary bg-body-tertiary border-0 text-body',
                 'data-bs-dismiss': 'modal'
               },
               'Cancel'
@@ -491,21 +518,25 @@ function App(props) {
     archivedTimesheets: [],
     activeTimesheet: null
   }, '[timesheetsindex]');
-  return e(React.Fragment, {},
-    e('div', {className: 'container d-flex py-3 align-items-center mt-2'},
-      e('h2', {className: 'h3 my-0'}, 'Timesheets'),
+  return e('div', {className: 'mx-auto', style: {maxWidth: 700}},
+    e('div', {className: 'container d-flex py-3 align-items-center justify-content-between'},
+      e('h2', {className: 'h6 my-0'}, 'Active Timesheets'),
       e('button',
         {
           'data-bs-toggle': 'modal',
           'data-bs-target': '#createtimesheet',
-          className: 'btn btn-outline-secondary ms-3'
+          className: 'btn btn-secondary ms-3 border-0 bg-body-tertiary rounded-pill py-1 text-body-emphasis'
         },
+        e('i', {
+          className: 'bi bi-file-earmark-plus me-1 text-body',
+          ariaHidden: true,
+        }),
         'Create'
       ),
     ),
     e(CreateTimesheet, {timesheets: timesheets.timesheets, dispatch: dispatch}),
     timesheets.timesheets.length === 0 ? e('p', {className: 'container'}, 'Create a timesheet to get started.') : null,
-    e('div', {className: 'accordion my-3 container px-0 px-md-2'},
+    e('div', {className: 'accordion container px-0', id: 'timesheets-accordion'},
       timesheets.timesheets.slice(0).reverse().map(function(timesheet) {
         return e(SingleTimesheet,
           {
@@ -518,7 +549,7 @@ function App(props) {
       }),
     ),
     e('div', {className: 'container'},
-      e('h2', {className: 'h4 mt-5'}, 'Archived Timesheets'),
+      e('h2', {className: 'h6 mt-4'}, 'Archived Timesheets'),
       e('ul', {className: 'mb-5'},
         timesheets.archivedTimesheets.map(function(timesheet) {
           return e(ArchivedTimesheet, {timesheet: timesheet, dispatch: dispatch})
