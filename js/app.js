@@ -3,6 +3,7 @@ import { HeaderActions } from './components/header-actions.js';
 import { SingleTimesheet } from './components/single-timesheet.js';
 import { CreateTimesheet } from './components/create-timesheet.js';
 import { ArchivedTimesheet } from './components/archived-timesheet.js';
+import { ImportTimesheet } from './components/import-timesheet.js';
 import { ExportTimesheet } from './components/export-timesheet.js';
 
 const e = React.createElement;
@@ -19,6 +20,7 @@ function App(props) {
       e('h2', {className: 'h5 my-0 text-body-emphasis'}, 'Timesheets'),
       e(HeaderActions),
       e(CreateTimesheet, {timesheets: timesheets.timesheets, dispatch: dispatch}),
+      e(ImportTimesheet, {timesheets: [...timesheets.timesheets, ...timesheets.archivedTimesheets], dispatch: dispatch}),
       e(ExportTimesheet, {timesheets: timesheets.timesheets}),
     ),
 
