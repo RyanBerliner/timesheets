@@ -1,7 +1,9 @@
 import { useLocalStorageReducer, appReducer } from './state.js';
+import { HeaderActions } from './components/header-actions.js';
 import { SingleTimesheet } from './components/single-timesheet.js';
 import { CreateTimesheet } from './components/create-timesheet.js';
 import { ArchivedTimesheet } from './components/archived-timesheet.js';
+import { ExportTimesheet } from './components/export-timesheet.js';
 
 const e = React.createElement;
 
@@ -15,17 +17,15 @@ function App(props) {
   return e(React.Fragment, {},
     e('div', {className: 'container d-flex py-3 align-items-center justify-content-between mt-2'},
       e('h2', {className: 'h5 my-0 text-body-emphasis'}, 'Timesheets'),
-      e('button',
-        {
-          'data-bs-toggle': 'modal',
-          'data-bs-target': '#createtimesheet',
-          className: 'btn btn-link bg-body-tertiary text-body text-decoration-none rounded-pill py-2 px-3 lh-1'
-        },
-        'Create'
-      ),
+      e(HeaderActions),
+      e(CreateTimesheet, {timesheets: timesheets.timesheets, dispatch: dispatch}),
+      e(ExportTimesheet, {timesheets: timesheets.timesheets}),
     ),
-    e(CreateTimesheet, {timesheets: timesheets.timesheets, dispatch: dispatch}),
-    timesheets.timesheets.length === 0 ? e('p', {className: 'container'}, 'Create a timesheet to get started.') : null,
+
+    timesheets.timesheets.length === 0
+      ? e('p', {className: 'container'}, 'Create a timesheet to get started.')
+      : null,
+
     e('div', {className: 'accordion my-3 container px-0 px-md-2'},
       timesheets.timesheets.slice(0).reverse().map(function(timesheet) {
         return e(SingleTimesheet,
@@ -38,6 +38,7 @@ function App(props) {
         )
       }),
     ),
+
     e('div', {className: 'container'},
       e('h2', {className: 'h5 mt-5 text-body-emphasis'}, 'Archived Timesheets'),
       e('ul', {className: 'mb-5'},

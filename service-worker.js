@@ -2,6 +2,7 @@
 
 const ASSETS_STATIC = [
   'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
+  'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css',
   'https://unpkg.com/react@17.0.2/umd/react.production.min.js',
   'https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js',
   'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js',

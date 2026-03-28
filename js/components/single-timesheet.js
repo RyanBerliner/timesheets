@@ -1,5 +1,5 @@
 import { useLocalStorageReducer, timesheetReducer } from '../state.js';
-import { randomId, formatShareData } from '../utils.js';
+import { randomId } from '../utils.js';
 
 const e = React.createElement;
 
@@ -218,53 +218,6 @@ export function SingleTimesheet(props) {
             ),
           ),
           e('div', {className: 'd-flex mt-3 mt-md-0 align-items-center'},
-            e('button',
-              {
-                type: 'button',
-                'data-bs-toggle': 'modal',
-                'data-bs-target': `#share-${id.current}`,
-                className: 'btn btn-sm btn-link',
-              },
-              'Share Timesheet'
-            ),
-            e(BS5ReactElements.Modal,
-              {
-                tabIndex: -1,
-                className: 'modal fade',
-                id: `share-${id.current}`,
-                'aria-hidden': true
-              },
-              e('div', {className: 'modal-dialog'},
-                e('div', {className: 'modal-content'},
-                  e('div', {className: 'modal-header'},
-                    e('h3', {className: 'h5 modal-title'}, 'Share Timesheet'),
-                    e('button',
-                      {
-                        type: 'button',
-                        className: 'btn-close',
-                        'data-bs-dismiss': 'modal',
-                        'aria-label': 'close',
-                      }
-                    )
-                  ),
-                  e('div', {className: 'modal-body'},
-                    e('p', {},
-                      'You can copy and paste this timesheets data to share it with others however they prefer. ',
-                      'Or ',
-                      e('a', {href: `mailto:?subject=${props.timesheet}&body=${formatShareData(timesheet, true)}`}, 'click this link to send an email.'),
-                    ),
-                    e('textarea',
-                      {
-                        readonly: true,
-                        className: 'form-control mb-3',
-                        rows: 5,
-                        value: formatShareData(timesheet, false)
-                      }
-                    )
-                  )
-                )
-              )
-            ),
             e('button',
               {
                 type: 'button',
