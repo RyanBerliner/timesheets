@@ -126,14 +126,14 @@ function AddTime(props) {
   const id = React.useRef(randomId());
   return e('form',
     {
-      className: 'mt-1 py-3 row bg-white',
+      className: 'mt-1 py-3 bg-body',
       onSubmit: function(e) {
         e.preventDefault();
         props.dispatch({type: 'addtime', payload: {time: Date.now(), racer: addTimeRacer}});
         setAddTimeRacer('');
       }
     },
-    e('div', {className: 'col-md-8 col-lg-10 mb-3 mb-md-0 d-flex align-items-center'},
+    e('div', {className: 'mb-3 d-flex align-items-center'},
       e('label', {className: 'text-nowrap', htmlFor: id.current}, 'Racer #'),
       e('input',
         {
@@ -148,7 +148,7 @@ function AddTime(props) {
         }
       ),
     ),
-    e('div', {className: 'col-lg-2 col-md-4'},
+    e('div', {},
       e('input',
         {
           className: 'btn btn-primary d-block w-100',
@@ -322,7 +322,7 @@ function SingleTimesheet(props) {
             e(BS5ReactElements.Toast,
               {
                 component: syncToast,
-                className: 'toast bg-white my-3 mx-auto hide'
+                className: 'toast bg-body my-3 mx-auto hide'
               },
               e('div', {className: 'd-flex align-items-center'},
                 e('div', {className: 'toast-body'}, 'Time sync has been recorded.'),
@@ -413,7 +413,7 @@ function CreateTimesheet(props) {
         setTimesheetName('');
       }
     },
-    e('div', {className: 'modal-dialog'},
+    e('div', {className: 'modal-dialog modal-dialog-centered', style: {maxWidth: 370}},
       e('div', {className: 'modal-content p-4'},
         e('form',
           {
@@ -437,16 +437,14 @@ function CreateTimesheet(props) {
               }
             }
           ),
-          e('div', {className: 'd-flex justify-content-between'},
-            e('input', {className: 'btn btn-primary', type: 'submit', value: 'Create Timesheet'}),
-            e('button',
-              {
-                type: 'button',
-                className: 'btn btn-outline-danger',
-                'data-bs-dismiss': 'modal'
-              },
-              'Cancel'
-            )
+          e('input', {className: 'btn btn-primary w-100', type: 'submit', value: 'Create Timesheet'}),
+          e('button',
+            {
+              type: 'button',
+              className: 'btn btn-link bg-body-tertiary text-decoration-none text-body w-100 mt-2',
+              'data-bs-dismiss': 'modal'
+            },
+            'Cancel'
           )
         )
       )
@@ -492,13 +490,13 @@ function App(props) {
     activeTimesheet: null
   }, '[timesheetsindex]');
   return e(React.Fragment, {},
-    e('div', {className: 'container d-flex py-3 align-items-center mt-2'},
-      e('h2', {className: 'h3 my-0'}, 'Timesheets'),
+    e('div', {className: 'container d-flex py-3 align-items-center justify-content-between mt-2'},
+      e('h2', {className: 'h5 my-0 text-body-emphasis'}, 'Timesheets'),
       e('button',
         {
           'data-bs-toggle': 'modal',
           'data-bs-target': '#createtimesheet',
-          className: 'btn btn-outline-secondary ms-3'
+          className: 'btn btn-link bg-body-tertiary text-body text-decoration-none rounded-pill py-2 px-3 lh-1'
         },
         'Create'
       ),
@@ -518,7 +516,7 @@ function App(props) {
       }),
     ),
     e('div', {className: 'container'},
-      e('h2', {className: 'h4 mt-5'}, 'Archived Timesheets'),
+      e('h2', {className: 'h5 mt-5 text-body-emphasis'}, 'Archived Timesheets'),
       e('ul', {className: 'mb-5'},
         timesheets.archivedTimesheets.map(function(timesheet) {
           return e(ArchivedTimesheet, {timesheet: timesheet, dispatch: dispatch})
