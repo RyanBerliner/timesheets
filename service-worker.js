@@ -3,13 +3,22 @@
 const ASSETS_STATIC = [
   'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css',
   'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css',
+  'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/fonts/bootstrap-icons.woff2?e34853135f9e39acf64315236852cd5a',
+  'https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/fonts/bootstrap-icons.woff?e34853135f9e39acf64315236852cd5a',
   'https://unpkg.com/react@17.0.2/umd/react.production.min.js',
   'https://unpkg.com/react-dom@17.0.2/umd/react-dom.production.min.js',
   'https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js',
   'https://cdn.jsdelivr.net/npm/bs5-react-elements@2.1.1/dist/bs5-react-elements.min.js',
+  'js/components/archived-timesheet.js',
+  'js/components/create-timesheet.js',
+  'js/components/export-timesheet.js',
+  'js/components/header-actions.js',
+  'js/components/import-timesheet.js',
+  'js/components/single-timesheet.js',
   'js/app.js',
   'js/state.js',
   'js/updater.js',
+  'js/utils.js',
   'index.html',
   'manifest.json',
   'icons-192.png',
@@ -21,7 +30,7 @@ const ASSETS_STATIC = [
 // with something specific to timesheets so we lessen the possiblity of conflicts
 
 const CACHE_PREFIX = 'timesheets-sw-assets';
-const CACHE_VERSION = '2023.06.03.0';
+const CACHE_VERSION = '2026.03.28.0';
 
 const EXPECTED_CACHES = [
   `${CACHE_PREFIX}static-${CACHE_VERSION}`,
