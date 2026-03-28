@@ -1,125 +1,7 @@
-'use strict';
-
-const skipWaitingBtn = document.getElementById('sw-skip-waiting');
-const updateAlert = document.getElementById('sw-update-alert');
-
-function showSkipWaiting(registration) {
-  updateAlert.classList.remove('d-none');
-  skipWaitingBtn.addEventListener('click', function(event) {
-    event.preventDefault();
-    registration.waiting.postMessage('SKIP_WAITING');
-  });
-}
-
-// https://developers.google.com/web/ilt/pwa/introduction-to-service-worker
-// https://whatwebcando.today/articles/handling-service-worker-updates/
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js', {scope: '/timesheets/'})
-  .then(function(registration) {
-    console.log('Service worker registration successful, scope is:', registration.scope);
-
-    if (registration.waiting) {
-      showSkipWaiting(registration);
-    }
-
-    registration.addEventListener('updatefound', function() {
-      if (registration.installing) {
-        registration.installing.addEventListener('statechange', function() {
-          if (registration.waiting && navigator.serviceWorker.controller) {
-            showSkipWaiting(registration);
-          }
-        });
-      }
-    });
-
-    let refreshing = false;
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      if (!refreshing) {
-        window.location.reload();
-        refreshing = true;
-      }
-    });
-  })
-  .catch(function(error) {
-    console.log('Service worker registration failed, error:', error);
-  });
-}
+import { useLocalStorageReducer, timesheetReducer } from '../state.js';
+import { randomId, formatShareData } from '../utils.js';
 
 const e = React.createElement;
-
-// http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript
-function randomId() {
-  return `id-${Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)}`;
-}
-
-function reducer(state, action) {
-  const newState = JSON.parse(JSON.stringify(state));
-  const payload = action.payload;
-  switch (action.type) {
-    case 'addtime':
-      newState.times.push(payload.time);
-      newState.details[payload.time] = {time: payload.time, racer: payload.racer};
-      return newState;
-    case 'edittime':
-      newState.details[payload.time] = {time: payload.time, racer: payload.racer};
-      return newState;
-    case 'deletetime':
-      delete newState.details[payload.time];
-      newState.times = newState.times.filter(function(time) {
-        return time != payload.time;
-      });
-      return newState;
-    case 'timesync':
-      newState.timesync = payload.time;
-      return newState;
-    case 'addtimesheet':
-    case 'restoretimesheet':
-      if (newState.timesheets.indexOf(payload.name) < 0) {
-        newState.timesheets.push(payload.name);
-      }
-      newState.archivedTimesheets = newState.archivedTimesheets.filter(function(timesheet) {
-        return timesheet != payload.name;
-      });
-      newState.activeTimesheet = payload.name;
-      return newState;
-    case 'archivetimesheet':
-      newState.timesheets = newState.timesheets.filter(function(timesheet) {
-        return timesheet != payload.name;
-      });
-      if (newState.archivedTimesheets.indexOf(payload.name) < 0) {
-        newState.archivedTimesheets.push(payload.name);
-      }
-      newState.activeTimesheet = null;
-      return newState;
-    case 'deletetimesheet':
-      newState.archivedTimesheets = newState.archivedTimesheets.filter(function(timesheet) {
-        return timesheet != payload.name;
-      });
-      return newState;
-    default:
-      return newState;
-  }
-}
-
-function useLocalStorage(initialValue, key) {
-  const [state, dispatch] = React.useReducer(reducer, (function() {
-    const existingValue = window.localStorage.getItem(key);
-    return existingValue == null ? initialValue : JSON.parse(existingValue);
-  })());
-  React.useEffect(function() {
-    window.localStorage.setItem(key, JSON.stringify(state));
-  }, [key, state]);
-  return [state, dispatch];
-}
-
-function formatShareData(timesheet, useBreak) {
-  const rows = [];
-  rows.push(`time sync: ${timesheet.timesync || '(not synced)'}`);
-  timesheet.times.forEach(function(time) {
-    rows.push(`${timesheet.details[time].racer} ${time}`);
-  });
-  return rows.join(useBreak ? '%0D%0A' : '\n');
-}
 
 function AddTime(props) {
   const [addTimeRacer, setAddTimeRacer] = React.useState('');
@@ -236,8 +118,13 @@ function Time(props) {
   );
 }
 
-function SingleTimesheet(props) {
-  const [timesheet, dispatch] = useLocalStorage({times: [], details: {}, timesync: null}, props.timesheet);
+export function SingleTimesheet(props) {
+  const [timesheet, dispatch] = useLocalStorageReducer({
+    times: [],
+    details: {},
+    timesync: null
+  }, props.timesheet, timesheetReducer);
+
   const [secondsSinceLastRacer, setSecondsSinceLastRacer] = React.useState(0);
   const id = React.useRef(randomId());
   const collapse = React.useRef();
@@ -386,7 +273,7 @@ function SingleTimesheet(props) {
                   e.preventDefault();
                   let OK = confirm('Are you sure you\'d like to archive this timesheet?');
                   if (OK) {
-                    props.timesheetDispatch({type: 'archivetimesheet', payload: {name: props.timesheet}})
+                    props.appDispatch({type: 'archivetimesheet', payload: {name: props.timesheet}})
                   }
                 }
               },
@@ -398,136 +285,3 @@ function SingleTimesheet(props) {
     ),
   );
 }
-
-function CreateTimesheet(props) {
-  const [timesheetName, setTimesheetName] = React.useState('');
-  const modal = React.useRef();
-  return e(BS5ReactElements.Modal,
-    {
-      className: 'modal fade',
-      id: 'createtimesheet',
-      tabindex: -1,
-      'aria-hidden': true,
-      component: modal,
-      onShow: function(e) {
-        setTimesheetName('');
-      }
-    },
-    e('div', {className: 'modal-dialog modal-dialog-centered', style: {maxWidth: 370}},
-      e('div', {className: 'modal-content p-4'},
-        e('form',
-          {
-            onSubmit: function(e) {
-              e.preventDefault();
-              props.dispatch({type: 'addtimesheet', payload: {name: timesheetName}});
-              modal.current.hide();
-            }
-          },
-          e('label', {className: 'text-nowrap', htmlFor: 'timesheetname'}, 'Timesheet Name'),
-          e('input',
-            {
-              type: 'text',
-              value: timesheetName,
-              id: 'timesheetname',
-              required: true,
-              className: 'form-control mt-2 mb-3',
-              placeholder: 'Ex. "Stage 2 Finish"',
-              onChange: function(e) {
-                setTimesheetName(e.target.value);
-              }
-            }
-          ),
-          e('input', {className: 'btn btn-primary w-100', type: 'submit', value: 'Create Timesheet'}),
-          e('button',
-            {
-              type: 'button',
-              className: 'btn btn-link bg-body-tertiary text-decoration-none text-body w-100 mt-2',
-              'data-bs-dismiss': 'modal'
-            },
-            'Cancel'
-          )
-        )
-      )
-    )
-  );
-}
-
-function ArchivedTimesheet(props) {
-  return e('li', {},
-    `${props.timesheet} - `,
-    e('a',
-      {
-        role: 'button',
-        className: 'text-underline',
-        onClick: function(e) {
-          props.dispatch({type: 'restoretimesheet', payload: {name: props.timesheet}});
-        }
-      },
-      'Restore'
-    ),
-    e('span', {className: 'd-inline-block mx-2'}, '|'),
-    e('a',
-      {
-        role: 'button',
-        className: 'text-danger',
-        onClick: function(e) {
-          const OK = window.confirm('Are you sure you\'d like to delete this timesheet? This cannot be undone.');
-          if (OK) {
-            props.dispatch({type: 'deletetimesheet', payload: {name: props.timesheet}});
-            window.localStorage.removeItem(props.timesheet);
-          }
-        }
-      },
-      'Delete Permanently'
-    )
-  );
-}
-
-function App(props) {
-  const [timesheets, dispatch] = useLocalStorage({
-    timesheets: [],
-    archivedTimesheets: [],
-    activeTimesheet: null
-  }, '[timesheetsindex]');
-  return e(React.Fragment, {},
-    e('div', {className: 'container d-flex py-3 align-items-center justify-content-between mt-2'},
-      e('h2', {className: 'h5 my-0 text-body-emphasis'}, 'Timesheets'),
-      e('button',
-        {
-          'data-bs-toggle': 'modal',
-          'data-bs-target': '#createtimesheet',
-          className: 'btn btn-link bg-body-tertiary text-body text-decoration-none rounded-pill py-2 px-3 lh-1'
-        },
-        'Create'
-      ),
-    ),
-    e(CreateTimesheet, {timesheets: timesheets.timesheets, dispatch: dispatch}),
-    timesheets.timesheets.length === 0 ? e('p', {className: 'container'}, 'Create a timesheet to get started.') : null,
-    e('div', {className: 'accordion my-3 container px-0 px-md-2'},
-      timesheets.timesheets.slice(0).reverse().map(function(timesheet) {
-        return e(SingleTimesheet,
-          {
-            timesheetDispatch: dispatch,
-            timesheet: timesheet,
-            active: timesheet === timesheets.activeTimesheet,
-            key: timesheet
-          }
-        )
-      }),
-    ),
-    e('div', {className: 'container'},
-      e('h2', {className: 'h5 mt-5 text-body-emphasis'}, 'Archived Timesheets'),
-      e('ul', {className: 'mb-5'},
-        timesheets.archivedTimesheets.map(function(timesheet) {
-          return e(ArchivedTimesheet, {timesheet: timesheet, dispatch: dispatch})
-        }),
-        timesheets.archivedTimesheets.length === 0 ? e('li', {}, 'No archived timesheets') : null
-      ),
-    ),
-  );
-}
-
-ReactDOM.render(
-  e(App),
-  document.getElementById('app')
-);
