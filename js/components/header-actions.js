@@ -31,6 +31,11 @@ export function HeaderActions() {
         e('li', {}, e('a', {
           className: 'dropdown-item',
           'data-bs-toggle': 'modal',
+          'data-bs-target': '#importtimesheet',
+        }, 'Import')),
+        e('li', {}, e('a', {
+          className: 'dropdown-item',
+          'data-bs-toggle': 'modal',
           'data-bs-target': '#exporttimesheet',
         }, 'Export')),
       ),
