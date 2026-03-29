@@ -19,7 +19,7 @@ export function ExportTimesheet({ timesheets }) {
       'aria-hidden': true,
       onShow: () => setSelectedTimesheet(''),
     },
-    e('div', {className: 'modal-dialog'},
+    e('div', {className: 'modal-dialog modal-fullscreen-md-down'},
       e('div', {className: 'modal-content'},
         e('div', {className: 'modal-header'},
           e('h3', {className: 'h5 modal-title'}, 'Export Timesheet'),

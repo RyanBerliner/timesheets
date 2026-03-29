@@ -5,6 +5,7 @@ import { CreateTimesheet } from './components/create-timesheet.js';
 import { ArchivedTimesheet } from './components/archived-timesheet.js';
 import { ImportTimesheet } from './components/import-timesheet.js';
 import { ExportTimesheet } from './components/export-timesheet.js';
+import { ViewResults } from './components/view-results.js';
 
 const e = React.createElement;
 
@@ -22,6 +23,7 @@ function App(props) {
       e(CreateTimesheet, {timesheets: timesheets.timesheets, dispatch: dispatch}),
       e(ImportTimesheet, {timesheets: [...timesheets.timesheets, ...timesheets.archivedTimesheets], dispatch: dispatch}),
       e(ExportTimesheet, {timesheets: timesheets.timesheets}),
+      e(ViewResults, {timesheets: timesheets.timesheets}),
     ),
 
     timesheets.timesheets.length === 0

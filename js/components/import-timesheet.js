@@ -56,7 +56,7 @@ export function ImportTimesheet({ timesheets, archivedTimesheets, dispatch }) {
       onShow: reset,
       component: modal,
     },
-    e('div', {className: 'modal-dialog'},
+    e('div', {className: 'modal-dialog modal-fullscreen-md-down'},
       e('form', {className: 'modal-content', onSubmit: submit},
         e('div', {className: 'modal-header'},
           e('h3', {className: 'h5 modal-title'}, 'Import Timesheet'),
