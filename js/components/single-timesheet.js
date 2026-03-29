@@ -185,7 +185,7 @@ export function SingleTimesheet(props) {
             })
           )
         ),
-        e('div', {className: 'd-md-flex justify-content-between'},
+        e('div', {className: 'd-flex justify-content-between align-items-start'},
           e('span', {},
             e('button',
               {
@@ -202,8 +202,7 @@ export function SingleTimesheet(props) {
               },
               'Time Sync'
             ),
-            timesheet.timesync ? e('br') : null,
-            timesheet.timesync ? e('small', {className: 'text-muted ms-2'}, `synced at ${timesheet.timesync}`) : null
+            timesheet.timesync ? e('small', {className: 'd-block text-muted ms-2'}, `Synced at ${timesheet.timesync}`) : null
           ),
           e('div', {className: 'position-fixed top-0 end-0 start-0 px-3', style: {zIndex: 1025}},
             e(BS5ReactElements.Toast,
@@ -217,22 +216,20 @@ export function SingleTimesheet(props) {
               )
             ),
           ),
-          e('div', {className: 'd-flex mt-3 mt-md-0 align-items-center'},
-            e('button',
-              {
-                type: 'button',
-                className: 'btn btn-sm btn-link text-danger',
-                onClick: function(e) {
-                  e.preventDefault();
-                  let OK = confirm('Are you sure you\'d like to archive this timesheet?');
-                  if (OK) {
-                    props.appDispatch({type: 'archivetimesheet', payload: {name: props.timesheet}})
-                  }
+          e('button',
+            {
+              type: 'button',
+              className: 'btn btn-sm btn-link text-danger',
+              onClick: function(e) {
+                e.preventDefault();
+                let OK = confirm('Are you sure you\'d like to archive this timesheet?');
+                if (OK) {
+                  props.appDispatch({type: 'archivetimesheet', payload: {name: props.timesheet}})
                 }
-              },
-              'Archive'
-            ),
-          )
+              }
+            },
+            'Archive'
+          ),
         )
       )
     ),
