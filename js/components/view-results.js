@@ -120,8 +120,8 @@ export function ViewResults({ timesheets }) {
   }, [startName, finishName]);
 
   const reset = React.useCallback(() => {
-    setStartName('mock start');
-    setFinishName('mock finish');
+    setStartName('');
+    setFinishName('');
   }, []);
 
   return e(BS5ReactElements.Modal,
