@@ -165,7 +165,10 @@ export function SingleTimesheet(props) {
           'aria-expanded': false,
           'aria-controls': `sheet-${id.current}`,
         },
-        `${props.timesheet} (+${secondsSinceLastRacer})`
+        e('span', {}, props.timesheet),
+        secondsSinceLastRacer
+          ? e('span', {className: 'ms-2 font-monospace'}, '(+' + secondsSinceLastRacer + ')')
+          : null,
       ),
     ),
     e(BS5ReactElements.Collapse, 
