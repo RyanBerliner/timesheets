@@ -13,6 +13,7 @@ export function formatShareData(timesheet, useBreak) {
 }
 
 export function formatElapsed(rawMilliseconds) {
+  if (rawMilliseconds === Infinity) return '?';
   const milliseconds = rawMilliseconds % 1000;
   const minutes = Math.floor(rawMilliseconds / 60_000);
   const seconds = Math.floor(rawMilliseconds / 1000) % 60;
