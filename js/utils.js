@@ -12,3 +12,9 @@ export function formatShareData(timesheet, useBreak) {
   return rows.join(useBreak ? '%0D%0A' : '\n');
 }
 
+export function formatElapsed(rawMilliseconds) {
+  const milliseconds = rawMilliseconds % 1000;
+  const minutes = Math.floor(rawMilliseconds / 60_000);
+  const seconds = Math.floor(rawMilliseconds / 1000) % 60;
+  return `${minutes}:${String(seconds).padStart(2, '0')}.${String(milliseconds).padStart(3, '0')}s`;
+}
