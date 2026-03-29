@@ -15,6 +15,7 @@ const ASSETS_STATIC = [
   'js/components/header-actions.js',
   'js/components/import-timesheet.js',
   'js/components/single-timesheet.js',
+  'js/components/view-results.js',
   'js/app.js',
   'js/state.js',
   'js/updater.js',

@@ -38,6 +38,11 @@ export function HeaderActions() {
           'data-bs-toggle': 'modal',
           'data-bs-target': '#exporttimesheet',
         }, 'Export')),
+        e('li', {}, e('a', {
+          className: 'dropdown-item',
+          'data-bs-toggle': 'modal',
+          'data-bs-target': '#viewresults',
+        }, 'View Results')),
       ),
     ),
   );
